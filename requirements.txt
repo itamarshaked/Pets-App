@@ -1,5 +1,6 @@
-fastapi
-uvicorn
-sqlalchemy
-pydantic
+Flask
+Flask-SQLAlchemy
 psycopg2-binary
+python-dotenv
+pytest
+gunicorn
