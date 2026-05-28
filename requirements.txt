@@ -10,3 +10,4 @@ bcrypt==4.0.1
 flask-smorest
 marshmallow
 bandit
+pip-audit
