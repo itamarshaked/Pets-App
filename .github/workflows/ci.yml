@@ -34,3 +34,15 @@ jobs:
       - name: Run dependency vulnerability scan
         run: |
           pip-audit
+
+      - name: Build Docker image
+        run: |
+          docker build -t pet-app:ci .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: pet-app:ci
+          format: table
+          exit-code: "1"
+          severity: CRITICAL,HIGH
