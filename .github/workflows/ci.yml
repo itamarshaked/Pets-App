@@ -44,6 +44,6 @@ jobs:
         with:
           image-ref: pet-app:ci
           format: table
-          exit-code: "0"
+          exit-code: "0"	# בייצור צריך להיות על 1 כדי לעצור תהליכים ולא 0 שרת מתריע
           severity: CRITICAL
           ignore-unfixed: true
