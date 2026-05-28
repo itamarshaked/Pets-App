@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.models import Pet, User
 
 from app.extensions import db
 from app.models import Pet
@@ -12,13 +14,18 @@ def health():
 
 
 @pets_bp.route("/pets", methods=["POST"])
+@jwt_required()
 def create_pet():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+
     data = request.json
 
     pet = Pet(
         name=data["name"],
         species=data["species"],
-        age=data["age"]
+        age=data["age"],
+        owner_id=user.id
     )
 
     db.session.add(pet)
@@ -28,8 +35,12 @@ def create_pet():
 
 
 @pets_bp.route("/pets", methods=["GET"])
+@jwt_required()
 def get_pets():
-    pets = Pet.query.all()
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+
+    pets = Pet.query.filter_by(owner_id=user.id).all()
 
     return jsonify([pet.to_dict() for pet in pets])
 
@@ -54,7 +65,14 @@ def update_pet(pet_id):
 
 
 @pets_bp.route("/pets/<int:pet_id>", methods=["DELETE"])
+@jwt_required()
 def delete_pet(pet_id):
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+
+    if user.role != "admin":
+        return jsonify({"error": "Admin access required"}), 403
+
     pet = Pet.query.get_or_404(pet_id)
 
     db.session.delete(pet)
