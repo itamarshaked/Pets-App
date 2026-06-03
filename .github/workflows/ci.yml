@@ -47,3 +47,15 @@ jobs:
           exit-code: "1"	# בייצור צריך להיות על 1 כדי לעצור תהליכים ולא 0 שרת מתריע
           severity: CRITICAL
           ignore-unfixed: true
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image to GHCR
+        run: |
+          docker tag pet-app:ci ghcr.io/${{ github.repository_owner }}/pet-app:latest
+          docker push ghcr.io/${{ github.repository_owner }}/pet-app:latest

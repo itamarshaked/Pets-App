@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 pets.db
 .env
+.terraform/
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
